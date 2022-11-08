@@ -12,7 +12,8 @@ public class ParserFactory {
         String ext = FilenameUtils.getExtension(fileName);
 
         try {
-            Class<?> clazz = Class.forName("com.test.util.Parser" + ext.toUpperCase());
+            Class<?> clazz = Class.forName("com.test.util.Parser" +
+                    ext.toUpperCase());
             parser = (Parser) clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("This file type is not supported");

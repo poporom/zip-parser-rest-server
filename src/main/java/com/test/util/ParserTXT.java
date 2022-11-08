@@ -9,18 +9,18 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ParserTXT implements Parser{
+public class ParserTXT implements Parser {
 
     @Override
     public Set<String> parse(File entry, String regx) {
         Set<String> result = new HashSet<>();
 
-        Pattern pattern = Pattern.compile(regx,Pattern.UNICODE_CASE);
+        Pattern pattern = Pattern.compile(regx, Pattern.UNICODE_CASE);
         String str = null;
         try {
             str = FileUtils.readFileToString(entry, "utf-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         assert str != null;

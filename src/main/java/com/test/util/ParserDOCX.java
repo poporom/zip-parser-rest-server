@@ -24,8 +24,8 @@ public class ParserDOCX implements Parser{
     public Set<String> parse(File entry, String regx) {
 
         Set<String> result = new HashSet<>();
-
         WordprocessingMLPackage wordMLPackage = null;
+
         try {
             wordMLPackage = WordprocessingMLPackage
                     .load(entry);
@@ -37,19 +37,16 @@ public class ParserDOCX implements Parser{
             for (Object obj : textNodes) {
                 Text text = (Text) ((JAXBElement) obj).getValue();
                 String textValue = text.getValue();
-                //Add matcher here
+
                 Pattern pattern = Pattern.compile(regx,Pattern.UNICODE_CASE);
                 Matcher matcher = pattern.matcher(textValue);
 
                 while (matcher.find()) {
                     result.add(matcher.group());
                 }
-
-                System.out.println(textValue);
             }
-
         } catch (Docx4JException | JAXBException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return result;

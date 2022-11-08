@@ -22,7 +22,7 @@ import java.util.zip.ZipInputStream;
 @Component
 @Setter
 @Scope("prototype")
-public class ParserManager implements Runnable{
+public class ParserManager implements Runnable {
 
     private final RequestService requestService;
     private final StatusService statusService;
@@ -43,34 +43,54 @@ public class ParserManager implements Runnable{
 
     @Override
     public void run() {
+        setRequestStatus(2);
+        saveResult(readZipFile());
+        setRequestStatus(1);
+    }
 
-        Parser parser;
-        Map<String, ArrayList<String>> result = new HashMap<>();
-
-        // New status to request
-        Status status = statusService.getById(2);
+    private void setRequestStatus(Integer statusId) {
+        Status status = statusService.getById(statusId);
         request.setStatus(status);
         requestService.save(request);
+    }
 
-        // Opening zip + iterate
-        File tempFile = null;
-        byte[] buffer = new byte[1024];
-        int bufferSize = 1024;
+    private void saveResult(Map<String, ArrayList<String>> tempResult) {
+        for (Map.Entry<String, ArrayList<String>> entry : tempResult.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                Result result = new Result();
+                result.setContent(entry.getKey());
+                result.setFiles(entry.getValue());
+                result.setRequest(request);
+                resultService.save(result);
+            }
+        }
+    }
 
-        try (InputStream fis = new ByteArrayInputStream(fileContent); ZipInputStream zis = new ZipInputStream(fis)) {
+    private Map<String, ArrayList<String>> readZipFile() {
 
-            ZipEntry entry;
+        Map<String, ArrayList<String>> tmpResult = new HashMap<>();
 
-            while ((entry = zis.getNextEntry()) != null) {
+        try (InputStream fis = new ByteArrayInputStream(fileContent);
+             ZipInputStream zis = new ZipInputStream(fis)) {
 
-                if (entry.isDirectory())
+            ZipEntry zipEntry;
+            Parser parser;
+            String pattern = parserProperties.getRegexp();
+            byte[] buffer = new byte[1024];
+            int bufferSize = 1024;
+            File tempFile;
+
+            while ((zipEntry = zis.getNextEntry()) != null) {
+
+                if (zipEntry.isDirectory())
                     continue;
 
-                // Making File from entry
-                tempFile = File.createTempFile(entry.getName(), "tmp");
+                // Temp file from zip entry
+                tempFile = File.createTempFile(zipEntry.getName(), "tmp");
                 tempFile.deleteOnExit();
                 FileOutputStream fos = new FileOutputStream(tempFile);
-                BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
+                BufferedOutputStream bos = new BufferedOutputStream(fos,
+                        bufferSize);
                 int count;
                 while ((count = zis.read(buffer, 0, bufferSize)) != -1) {
                     bos.write(buffer, 0, count);
@@ -79,52 +99,29 @@ public class ParserManager implements Runnable{
                 bos.close();
 
                 // Parsing
-                String pattern = parserProperties.getRegexp();
-                parser = parserFactory.getParser(entry.getName());
-                Set<String> parse = parser.parse(tempFile, pattern);
+                parser = parserFactory.getParser(zipEntry.getName());
+                Set<String> parseResult = parser.parse(tempFile, pattern);
 
-                // Add to final result
-                for (String entry1: parse) {
-                    if (result.get(entry1) == null) {
-                        ArrayList<String> values = new ArrayList<>();
-                        values.add(entry.getName());
-                        result.put(entry1,values);
+                // Add to temporal result
+                for (String content : parseResult) {
+                    if (tmpResult.get(content) == null) {
+                        ArrayList<String> files = new ArrayList<>();
+                        files.add(zipEntry.getName());
+                        tmpResult.put(content, files);
                     } else {
-                        ArrayList<String> strings = result.get(entry1);
-                        strings.add(entry.getName());
-                        result.put(entry1,strings);
+                        ArrayList<String> files = tmpResult.get(content);
+                        files.add(zipEntry.getName());
+                        tmpResult.put(content, files);
                     }
                 }
             }
 
         } catch (IOException ex) {
-            // New status to request
-            status = statusService.getById(3);
-            request.setStatus(status);
-            requestService.save(request);
-
+            setRequestStatus(3);
             throw new RuntimeException(ex);
         }
 
-        // Analise
-        for (Map.Entry<String, ArrayList<String>> res: result.entrySet()) {
-            // Add to table
-            if (res.getValue().size() > 1) {
-                String cont = res.getKey();
-                for (String str: res.getValue()) {
-                    Result resul = new Result();
-                    resul.setContent(cont);
-                    resul.setFile(str);
-                    resul.setRequest(request);
-                    resultService.save(resul);
-                }
-            }
-        }
-
-        // New status to request
-        status = statusService.getById(1);
-        request.setStatus(status);
-        requestService.save(request);
-
+        return tmpResult;
     }
+
 }
