@@ -1,7 +1,7 @@
-package com.test.service;
+package com.zipparser.service;
 
-import com.test.entity.Request;
-import com.test.repo.RequestRepository;
+import com.zipparser.entity.Request;
+import com.zipparser.repo.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package com.test.repo;
+package com.zipparser.repo;
 
-import com.test.entity.Request;
+import com.zipparser.entity.Request;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

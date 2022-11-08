@@ -1,4 +1,4 @@
-package com.test.entity;
+package com.zipparser.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

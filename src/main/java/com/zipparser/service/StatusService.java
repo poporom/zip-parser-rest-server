@@ -1,7 +1,7 @@
-package com.test.service;
+package com.zipparser.service;
 
-import com.test.entity.Status;
-import com.test.repo.StatusRepository;
+import com.zipparser.entity.Status;
+import com.zipparser.repo.StatusRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,9 +1,9 @@
-package com.test.controller;
+package com.zipparser.controller;
 
-import com.test.config.ApplicationContextProvider;
-import com.test.entity.Request;
-import com.test.service.RequestService;
-import com.test.util.ParserManager;
+import com.zipparser.config.ApplicationContextProvider;
+import com.zipparser.entity.Request;
+import com.zipparser.service.RequestService;
+import com.zipparser.util.ParserManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

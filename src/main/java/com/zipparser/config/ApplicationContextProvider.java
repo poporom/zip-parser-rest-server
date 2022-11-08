@@ -1,4 +1,4 @@
-package com.test.config;
+package com.zipparser.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

@@ -1,12 +1,12 @@
-package com.test.util;
+package com.zipparser.util;
 
-import com.test.config.ParserProperties;
-import com.test.entity.Request;
-import com.test.entity.Result;
-import com.test.entity.Status;
-import com.test.service.RequestService;
-import com.test.service.ResultService;
-import com.test.service.StatusService;
+import com.zipparser.config.ParserProperties;
+import com.zipparser.entity.Request;
+import com.zipparser.entity.Result;
+import com.zipparser.entity.Status;
+import com.zipparser.service.RequestService;
+import com.zipparser.service.ResultService;
+import com.zipparser.service.StatusService;
 import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.test.util;
+package com.zipparser.util;
 
 import java.io.File;
 import java.util.Set;

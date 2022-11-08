@@ -1,4 +1,4 @@
-package com.test.util;
+package com.zipparser.util;
 
 import org.apache.commons.io.FileUtils;
 

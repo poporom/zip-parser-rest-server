@@ -1,4 +1,4 @@
-package com.test.util;
+package com.zipparser.util;
 
 
 import org.docx4j.openpackaging.exceptions.Docx4JException;
