@@ -116,7 +116,7 @@ public class ParserManager implements Runnable {
                 }
             }
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             setRequestStatus(3);
             throw new RuntimeException(ex);
         }

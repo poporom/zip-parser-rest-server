@@ -3,21 +3,19 @@ package com.zipparser.util;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
+
 @Component
 public class ParserFactory {
 
-    public Parser getParser(String fileName) {
+    public Parser getParser(String fileName) throws Exception {
 
         Parser parser;
         String ext = FilenameUtils.getExtension(fileName);
 
-        try {
-            Class<?> clazz = Class.forName("com.test.util.Parser" +
-                    ext.toUpperCase());
-            parser = (Parser) clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("This file type is not supported");
-        }
+        Class<?> clazz = Class.forName("com.zipparser.util.Parser" +
+                ext.toUpperCase());
+        parser = (Parser) clazz.getDeclaredConstructor().newInstance();
 
         return parser;
     }
